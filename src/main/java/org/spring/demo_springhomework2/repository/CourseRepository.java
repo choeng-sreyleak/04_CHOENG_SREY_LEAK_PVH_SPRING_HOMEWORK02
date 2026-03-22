@@ -45,4 +45,6 @@ public interface CourseRepository {
 
     @Delete("DELETE FROM courses WHERE course_id = #{courseId}")
     void deleteCourse(Long courseId);
+
+
 }

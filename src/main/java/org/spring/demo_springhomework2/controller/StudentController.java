@@ -1,6 +1,7 @@
 package org.spring.demo_springhomework2.controller;
 
 import org.spring.demo_springhomework2.model.entity.Student;
+import org.spring.demo_springhomework2.model.request.StudentRequest;
 import org.spring.demo_springhomework2.model.response.ApiResponse;
 import org.spring.demo_springhomework2.service.StudentService;
 import org.springframework.http.HttpStatus;
@@ -25,8 +26,36 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
-    @GetMapping("/{student_id}")
-    public Student getStudentsById(@PathVariable("student_id") long studentId){
-        return studentService.getStudentByid(studentId);
+    @GetMapping("/{student-id}")
+    public ResponseEntity<ApiResponse<Student>> getStudentByid (@PathVariable("student-id") Long studentId) {
+        Student student = studentService.getStudentByid(studentId);
+        ApiResponse<Student> response = ApiResponse.<Student>builder().success(true).status(HttpStatus.OK).message("Student fetched successfully!").payload(student).timestamp(Instant.now()).build();
+        return ResponseEntity.ok(response);
     }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<Student>> createStudent(@RequestBody StudentRequest request) {
+        Student student = studentService.createStudent(request);
+        ApiResponse<Student> response = ApiResponse.<Student>builder().success(true).status(HttpStatus.CREATED).message("Student created successfully!").payload(student).timestamp(Instant.now()).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/{student-id}")
+    public ResponseEntity<ApiResponse<Student>> updateStudent(
+            @PathVariable("student-id") Long studentId,
+            @RequestBody StudentRequest request) {
+        Student student = studentService.updateStudent(studentId, request);
+        ApiResponse<Student> response = ApiResponse.<Student>builder().success(true).status(HttpStatus.OK).message("Student updated successfully!").payload(student).timestamp(Instant.now()).build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{student-id}")
+    public ResponseEntity<ApiResponse<Void>> deleteStudent(@PathVariable("student-id") Long studentId) {
+        studentService.deleteStudent(studentId);
+        ApiResponse<Void> response = ApiResponse.<Void>builder().success(true).status(HttpStatus.OK).message("Student deleted successfully!").timestamp(Instant.now()).build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+
 }
